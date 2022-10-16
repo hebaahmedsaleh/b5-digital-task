@@ -1,12 +1,13 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Card } from './product-card';
-import Tabs from './tabs';
+import { useLocation } from 'react-router-dom';
 
-import data from './products.json';
+import { Card } from './product-card';
+
 import { Product } from 'types';
 
-import Search from './icons/search.svg';
+import { API_URL, ITEMS_PER_PAGE } from './constants';
+import usePagination from 'use-pagination';
 
 const StyledMain = styled.div`
   display: flex;
@@ -19,49 +20,65 @@ const StyledMain = styled.div`
   }
 `;
 
-const StyledSearchIcon = styled.img`
-  margin-right: 8px;
-  position: absolute;
-  top: 8px;
-  left: 16px;
-  height: 24px;
-  width: 24px;
-`;
+const fetchData = async (page: number, categoryName: string, searchTerm?: string) => {
+  const skip = page > 1 ? page * ITEMS_PER_PAGE : 0;
+  let resultQuery = '';
+  const params: { skip?: number; limit?: number; q?: string } = {
+    skip,
+    limit: ITEMS_PER_PAGE,
+    q: searchTerm,
+  };
 
-const StyledSearchInput = styled.input`
-  display: flex;
-  padding: 8px 48px;
-  height: 40px;
-  width: 100%;
-  background: #f7f7fc;
-  border-radius: 8px;
-  border: 1px solid #000;
-  &:focus,
-  &:active {
-    outline: none;
+  (Object.keys(params) as (keyof typeof params)[]).forEach((key, index) => {
+    if (index === 2) resultQuery += `${key}=${params[key]}`;
+    else resultQuery += `${key}=${params[key]}&`;
+  });
+
+  let pathName = `${API_URL}products?${resultQuery}`;
+
+  if (categoryName && categoryName !== 'All') {
+    pathName = `${API_URL}products/category/${categoryName}?${resultQuery}`;
   }
-  &::placeholder {
-    font-weight: 400;
-    font-size: 14px;
-    line-height: 130%;
-    display: flex;
-    align-items: center;
-    letter-spacing: 0.008em;
-    color: #9a9ab0;
+
+  const categoryProducts = await fetch(pathName);
+
+  if (!categoryProducts.ok) {
+    throw Error(categoryProducts.statusText);
   }
-`;
+  const categoryProductsJson = await categoryProducts.json();
+
+  return categoryProductsJson;
+};
+
+const handleScroll = (e: any) => {
+  console.log('heey');
+  const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+  if (bottom) {
+    console.log('heey');
+  }
+};
 
 const MainContent = () => {
-  return (
-    <StyledMain>
-      <div style={{ position: 'relative' }}>
-        <StyledSearchInput type='text' placeholder='Search Here..' name='search' />
-        <StyledSearchIcon src={Search} />
-      </div>
+  const [categoryProducts, setcategoryProducts] = useState<Product[]>([]);
+  const [, setIsLoading] = useState<boolean>(true);
+  const [, setHasError] = useState<Error>();
 
-      <Tabs />
+  const location = useLocation();
+  const { currentPage } = usePagination();
+
+  useEffect(() => {
+    const filter = location.pathname.slice(1);
+    const searchValue = location.search.replace('?q=', '');
+    fetchData(currentPage, filter, searchValue)
+      .then((result) => setcategoryProducts(result.products))
+      .catch((error) => setHasError(error))
+      .finally(() => setIsLoading(false));
+  }, [location]);
+
+  return (
+    <StyledMain onScroll={handleScroll}>
       <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-        {data.products.map((product: Product) => {
+        {categoryProducts.map((product: Product) => {
           return <Card key={product.id} {...product} />;
         })}
       </div>

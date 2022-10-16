@@ -12,8 +12,6 @@
 .title {
   font-weight: normal;
   font-size: 16px;
-  color: #11142d;
-  font-family: 'Mulish';
   letter-spacing: 0.005em;
   max-width: 200px;
   white-space: nowrap;
@@ -23,6 +21,14 @@
   margin-top: 16px;
 }
 
+.description {
+  font-weight: normal;
+  font-size: 16px;
+  letter-spacing: 0.005em;
+  max-width: 300px;
+  line-height: 120%;
+  margin-top: 16px;
+}
 .img {
   border-radius: 8px;
   height: 166px;

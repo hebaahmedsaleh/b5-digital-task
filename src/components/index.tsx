@@ -9,53 +9,52 @@ import styles from './main.module.css';
 import Loading from './loading';
 import { API_URL, ITEMS_PER_PAGE, TOTAL_NO_PHOTOS } from './constants';
 
-import { Photo, Props } from 'types';
+import { Props } from 'types';
+import usePagination from '../use-pagination';
+import { CartContext } from 'cart-context';
 
 const RenderStateContainer: FC<Props> = ({ children }) => {
   return <div className={styles.loading}>{children}</div>;
 };
 
-const fetchData = async (page: number) => {
-  const photos = await fetch(`${API_URL}/photos?_page=${page}&_limit=${ITEMS_PER_PAGE}`);
-  if (!photos.ok) {
-    throw Error(photos.statusText);
+const fetchCategories = async () => {
+  const categories = await fetch(`${API_URL}products/categories`);
+  if (!categories.ok) {
+    throw Error(categories.statusText);
   }
-  const photosJson = await photos.json();
+  const categoriesJson = await categories.json();
 
-  return photosJson;
+  return categoriesJson;
 };
 
 const Container = styled.div`
   display: flex;
   padding: 40px 32px;
-  margin-left: 90px;
+  margin-left: 300px;
   margin-top: 100px;
 
   background-color: #f7f7fc;
   @media (max-width: 992px) {
     flex-direction: column;
     padding: 20px 16px;
-    margin-left: 60px;
+    margin-left: 100px;
     margin-top: 80px;
   }
 `;
 
 export const App = () => {
-  const [photos, setphotos] = useState<Photo[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [hasError, setHasError] = useState<Error>();
+  const [cartItems, addToCart] = useState(0);
 
   const { goTo, currentPage } = usePagination();
 
-  /* - Make http requests to https://jsonplaceholder.typicode.com/posts & 
-      https://jsonplaceholder.typicode.com/users
-      handle Error and Loading States 
-    */
   useEffect(() => {
     setIsLoading(true);
 
-    fetchData(currentPage)
-      .then((result) => setphotos(result))
+    fetchCategories()
+      .then((result) => setCategories(result))
       .catch((error) => setHasError(error))
       .finally(() => setIsLoading(false));
   }, [currentPage]);
@@ -69,10 +68,10 @@ export const App = () => {
       </RenderStateContainer>
     );
 
-  if (!isLoading && !photos.length && !hasError)
+  if (!isLoading && !categories.length && !hasError)
     return (
       <RenderStateContainer>
-        <h1> There is no photos yet.</h1>
+        <h1> There is no categories yet.</h1>
       </RenderStateContainer>
     );
 
@@ -82,23 +81,26 @@ export const App = () => {
         <h1> There is an error in getting data.</h1>
       </RenderStateContainer>
     );
+
   return (
-    <>
-      <Header />
-      <NavBar />
+    <CartContext.Provider value={{ cartItems, addToCart }}>
+      <div onScroll={() => alert('hee')}>
+        <Header categories={categories} />
+        <NavBar categories={categories} />
 
-      <Container>
-        <Content />
+        <Container>
+          <Content />
 
-        <Pagination
-          onChange={handlePageChange}
-          pageSize={ITEMS_PER_PAGE}
-          total={TOTAL_NO_PHOTOS}
-          hideOnSinglePage
-          showPrevNextJumpers
-          current={currentPage}
-        />
-      </Container>
-    </>
+          {/* <Pagination
+            onChange={handlePageChange}
+            pageSize={ITEMS_PER_PAGE}
+            total={TOTAL_NO_PHOTOS}
+            hideOnSinglePage
+            showPrevNextJumpers
+            current={currentPage}
+          /> */}
+        </Container>
+      </div>
+    </CartContext.Provider>
   );
 };

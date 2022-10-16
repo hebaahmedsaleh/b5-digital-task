@@ -50,15 +50,16 @@ interface Photo {
 }
 
 interface Product {
-  id: number;
-  title: string;
-  price: number;
-  discountPercentage: number;
-  rating: number;
-  stock: number;
   brand: string;
   category: string;
+  description: string;
+  discountPercentag: number;
+  id: number;
+  images: string[];
+  price: number;
+  rating: number;
+  stock: number;
   thumbnail: string;
-  images: Array<string>;
+  title: string;
 }
 export type { Post, User, Address, Company, ResultType, Props, Photo, Product };

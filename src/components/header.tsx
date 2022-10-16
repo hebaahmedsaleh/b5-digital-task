@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 
-import avatar from './icons/avatar.png';
-import notification from './icons/notification.png';
-import logo from './icons/logo.png';
+import avatar from './icons/ic-actions-user.svg';
+import cart from './icons/ic-ecommerce-basket.svg';
+import Search from './icons/search.svg';
 import { colors } from './color';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { API_URL } from './constants';
+import { CartContext } from 'cart-context';
 
 const StyledHeader = styled.header`
   background: ${colors.white};
@@ -19,34 +22,99 @@ const StyledHeader = styled.header`
   justify-content: space-between;
   align-items: center;
   box-sizing: border-box;
-  padding: 20px 32px;
+  padding: 20px 45px;
 `;
 
 const StyledAvatar = styled.div`
   display: flex;
+  cursor: pointer;
 
   & > div {
     width: 125px;
     margin-left: 16px;
   }
 `;
-const Header = () => {
+
+const StyledSearchIcon = styled.img`
+  margin-right: 8px;
+  position: absolute;
+  top: 8px;
+  left: 16px;
+  height: 24px;
+  width: 24px;
+`;
+
+const StyledSearchInput = styled.input`
+  display: flex;
+  padding: 8px 48px;
+  height: 40px;
+  width: 100%;
+  background: #f7f7fc;
+  border-radius: 8px;
+  border: 1px solid #000;
+  &:focus,
+  &:active {
+    outline: none;
+  }
+  &::placeholder {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 130%;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.008em;
+    color: #9a9ab0;
+  }
+`;
+
+const Header = ({ categories }: { categories: string[] }) => {
+  const navigate = useNavigate();
+  const [, setSearch] = useState('');
+  const [, setSearchParams] = useSearchParams();
+
+  const { cartItems } = useContext(CartContext);
+
+  const onChange = (e: any) => {
+    navigate(`/${e.target?.value}`);
+  };
+
+  const handleKeyDown = (event: any) => {
+    if (event.keyCode === 13) {
+      setSearchParams({ q: event.target?.value });
+    }
+  };
   return (
     <StyledHeader>
       <StyledAvatar style={{ alignItems: 'center' }}>
-        {/* <img src={logo} width={40} height={40} style={{ marginRight: 8 }} /> */}
-        <p style={{ color: '#11142D' }}> Dazboard </p>
+        <p style={{ color: colors.mainText, fontSize: 30, fontWeight: 'bolder' }}> Freshnesecom </p>
       </StyledAvatar>
 
+      <div style={{ position: 'relative' }}>
+        <select onChange={onChange}>
+          <option key='All' value='All'>
+            All
+          </option>
+          {categories.map((category) => (
+            <option key={category} value={category}>
+              {category}
+            </option>
+          ))}
+        </select>
+        <StyledSearchInput
+          type='text'
+          placeholder='Search Here..'
+          name='search'
+          onChange={(e) => setSearch(e.target.value)}
+          onKeyDown={handleKeyDown}
+        />
+        <StyledSearchIcon src={Search} />
+      </div>
+
       <StyledAvatar>
-        {/* <img src={notification} width={40} height={40} style={{ marginRight: 8 }} />
+        <img src={avatar} width={24} height={24} style={{ marginRight: 40 }} />
 
-        <img src={avatar} width={40} height={40} style={{ marginRight: 8 }} /> */}
-
-        <div>
-          <p style={{ color: '#11142D', opacity: 0.2, paddingBottom: 6 }}> Sumantu </p>
-          <p style={{ fontSize: 12, color: '#9A9AB0' }}> Cashier </p>
-        </div>
+        <img src={cart} width={24} height={24} style={{ marginRight: 8 }} />
+        {cartItems}
       </StyledAvatar>
     </StyledHeader>
   );

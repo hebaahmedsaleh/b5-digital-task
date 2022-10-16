@@ -5,4 +5,8 @@ export const colors = {
   black: '#000',
   greyText: '#92929D',
   separatorGrey: '#E1E1FB',
+
+  green: '#6A983C',
+  ggreenBorder: '#46760A',
+  mainText: '#151515',
 };
