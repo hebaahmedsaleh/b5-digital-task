@@ -39,19 +39,20 @@ const StyledSearchIcon = styled.img`
   margin-right: 8px;
   position: absolute;
   top: 8px;
-  left: 16px;
+  right: 16px;
   height: 24px;
   width: 24px;
+  transform: rotate(90deg);
 `;
 
 const StyledSearchInput = styled.input`
   display: flex;
-  padding: 8px 48px;
+  padding: 8px 12px;
   height: 40px;
-  width: 100%;
+  width: 250px;
   background: #f7f7fc;
-  border-radius: 8px;
-  border: 1px solid #000;
+  border: 0;
+
   &:focus,
   &:active {
     outline: none;
@@ -65,6 +66,20 @@ const StyledSearchInput = styled.input`
     letter-spacing: 0.008em;
     color: #9a9ab0;
   }
+`;
+
+const StyledSelect = styled.select`
+  height: 40px;
+  background: #f7f7fc;
+  padding: 8px 12px;
+  border: 0;
+  margin-right: 28px;
+`;
+
+const StyledContainer = styled.div`
+  padding: 2px;
+  border-radius: 8px;
+  border: 1px solid ${colors.lightBorder};
 `;
 
 const Header = ({ categories }: { categories: string[] }) => {
@@ -89,26 +104,29 @@ const Header = ({ categories }: { categories: string[] }) => {
         <p style={{ color: colors.mainText, fontSize: 30, fontWeight: 'bolder' }}> Freshnesecom </p>
       </StyledAvatar>
 
-      <div style={{ position: 'relative' }}>
-        <select onChange={onChange}>
+      <StyledContainer style={{ display: 'flex', backgroundColor: '#F7F7FC' }}>
+        <StyledSelect onChange={onChange}>
           <option key='All' value='All'>
-            All
+            All Categories
           </option>
           {categories.map((category) => (
             <option key={category} value={category}>
               {category}
             </option>
           ))}
-        </select>
-        <StyledSearchInput
-          type='text'
-          placeholder='Search Here..'
-          name='search'
-          onChange={(e) => setSearch(e.target.value)}
-          onKeyDown={handleKeyDown}
-        />
-        <StyledSearchIcon src={Search} />
-      </div>
+        </StyledSelect>
+        <div style={{ width: 1, backgroundColor: colors.lightBorder, margin: '4px 0' }} />
+        <div style={{ position: 'relative' }}>
+          <StyledSearchInput
+            type='text'
+            placeholder='Search Products, Categories..'
+            name='search'
+            onChange={(e) => setSearch(e.target.value)}
+            onKeyDown={handleKeyDown}
+          />
+          <StyledSearchIcon src={Search} />
+        </div>
+      </StyledContainer>
 
       <StyledAvatar>
         <img src={avatar} width={24} height={24} style={{ marginRight: 40 }} />

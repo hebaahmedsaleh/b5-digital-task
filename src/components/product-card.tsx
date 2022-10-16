@@ -14,7 +14,7 @@ export const StyledButton = styled.button`
   padding: 14px 24px;
   height: 48px;
   background: ${colors.green};
-  bordercolor: ${colors.ggreenBorder};
+  bordercolor: ${colors.greenBorder};
   border-radius: 8px;
   color: white;
   cursor: pointer;
@@ -23,7 +23,7 @@ export const StyledButton = styled.button`
 const StyledIncrementBtn = styled.div`
   height: 24px;
   width: 24px;
-  background-color: ${colors.lightText};
+  background-color: ${colors.greenBorder};
   border-radius: 4px;
   color: ${colors.white};
   text-align: center;
@@ -31,16 +31,15 @@ const StyledIncrementBtn = styled.div`
 `;
 
 const StyledContainer = styled.div`
-  & .btn-containers {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex: 1;
-    & .count-items {
-      height: 24px;
-      width: 40px;
-      text-align: center;
-    }
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+  justify-content: center;
+
+  & .count-items {
+    height: 24px;
+    width: 40px;
+    text-align: center;
   }
 `;
 
@@ -62,19 +61,28 @@ export const Card: FC<Product> = ({ title, thumbnail, description, price }) => {
   return (
     <div className={styles.container}>
       <img src={thumbnail} alt={thumbnail} className={styles.img} loading='lazy' />
-      <p className={styles.title} title={title}>
-        {title}
-      </p>
+      <div style={{ maxHeight: 80 }}>
+        <p className={styles.title} title={title}>
+          {title}
+        </p>
 
-      <p className={styles.description} title={description}>
-        {description}
-      </p>
+        <p className={styles.description} title={description}>
+          {description}
+        </p>
+      </div>
 
-      <div style={{ display: 'flex', alignContent: 'center', justifyContent: 'space-between' }}>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginTop: 20,
+        }}
+      >
         <p style={{ fontSize: 18, fontWeight: 'bold' }}> {price}USD</p>
 
         {count ? (
-          <StyledContainer className='btn-containers'>
+          <StyledContainer>
             <StyledIncrementBtn onClick={removeProduct}> - </StyledIncrementBtn>
             <div className='count-items'> {count} </div>
             <StyledIncrementBtn onClick={buyProduct}> + </StyledIncrementBtn>

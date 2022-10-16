@@ -7,6 +7,7 @@ export const colors = {
   separatorGrey: '#E1E1FB',
 
   green: '#6A983C',
-  ggreenBorder: '#46760A',
+  greenBorder: '#46760A',
   mainText: '#151515',
+  lightBorder: '#D1D1D1',
 };
