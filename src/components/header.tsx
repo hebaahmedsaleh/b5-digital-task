@@ -8,6 +8,8 @@ import { colors } from './color';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { API_URL } from './constants';
 import { CartContext } from 'cart-context';
+import usePagination from 'use-pagination';
+import { PaginationContext } from './pagination-context';
 
 const StyledHeader = styled.header`
   background: ${colors.white};
@@ -86,8 +88,9 @@ const Header = ({ categories }: { categories: string[] }) => {
   const navigate = useNavigate();
   const [, setSearch] = useState('');
   const [, setSearchParams] = useSearchParams();
-
+  // const { currentPage, goTo } = usePagination();
   const { cartItems } = useContext(CartContext);
+  const { goToPage } = useContext(PaginationContext);
 
   const onChange = (e: any) => {
     navigate(`/${e.target?.value}`);
@@ -95,9 +98,15 @@ const Header = ({ categories }: { categories: string[] }) => {
 
   const handleKeyDown = (event: any) => {
     if (event.keyCode === 13) {
-      setSearchParams({ q: event.target?.value });
+      window.scrollTo(0, 0);
+      // setCurrentPage(1);
+      goToPage(1);
+      //setSearchParams({ q: event.target?.value });
+      navigate(`?q=${event.target?.value}`);
     }
   };
+
+  const pathname = location.pathname.slice(1);
   return (
     <StyledHeader>
       <StyledAvatar style={{ alignItems: 'center' }}>
@@ -106,11 +115,11 @@ const Header = ({ categories }: { categories: string[] }) => {
 
       <StyledContainer style={{ display: 'flex', backgroundColor: '#F7F7FC' }}>
         <StyledSelect onChange={onChange}>
-          <option key='All' value='All'>
+          <option key='All' value='All' selected={pathname === 'All' || pathname === ''}>
             All Categories
           </option>
           {categories.map((category) => (
-            <option key={category} value={category}>
+            <option key={category} value={category} selected={pathname === category ? true : false}>
               {category}
             </option>
           ))}
@@ -131,8 +140,24 @@ const Header = ({ categories }: { categories: string[] }) => {
       <StyledAvatar>
         <img src={avatar} width={24} height={24} style={{ marginRight: 40 }} />
 
-        <img src={cart} width={24} height={24} style={{ marginRight: 8 }} />
-        {cartItems}
+        <div style={{ position: 'relative', height: 46 }}>
+          <img src={cart} width={24} height={24} style={{ marginRight: 8 }} />
+          <p
+            style={{
+              background: '#E5704B',
+              width: 16,
+              height: 16,
+              borderRadius: 8,
+              fontSize: 12,
+              textAlign: 'center',
+              position: 'absolute',
+              top: 4,
+              left: 4,
+            }}
+          >
+            {cartItems}
+          </p>
+        </div>
       </StyledAvatar>
     </StyledHeader>
   );

@@ -43,7 +43,7 @@ const StyledContainer = styled.div`
   }
 `;
 
-export const Card: FC<Product> = ({ title, thumbnail, description, price }) => {
+export const Card: FC<Product> = ({ id, title, thumbnail, description, price }) => {
   const [count, setItemCount] = useState(0);
 
   const { addToCart, cartItems } = useContext(CartContext);
@@ -59,7 +59,7 @@ export const Card: FC<Product> = ({ title, thumbnail, description, price }) => {
   };
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} key={id}>
       <img src={thumbnail} alt={thumbnail} className={styles.img} loading='lazy' />
       <div style={{ maxHeight: 80 }}>
         <p className={styles.title} title={title}>

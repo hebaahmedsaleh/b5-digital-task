@@ -12,8 +12,9 @@ import { API_URL, ITEMS_PER_PAGE, TOTAL_NO_PHOTOS } from './constants';
 import { Props } from 'types';
 import usePagination from '../use-pagination';
 import { CartContext } from 'cart-context';
+import { PaginationContext } from './pagination-context';
 
-const RenderStateContainer: FC<Props> = ({ children }) => {
+export const RenderStateContainer: FC<Props> = ({ children }) => {
   return <div className={styles.loading}>{children}</div>;
 };
 
@@ -47,9 +48,9 @@ export const App = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [hasError, setHasError] = useState<Error>();
   const [cartItems, addToCart] = useState(0);
+  // const { currentPage } = usePagination();
 
-  const { goTo, currentPage } = usePagination();
-
+  const [page, goToPage] = useState(1);
   useEffect(() => {
     setIsLoading(true);
 
@@ -57,9 +58,7 @@ export const App = () => {
       .then((result) => setCategories(result))
       .catch((error) => setHasError(error))
       .finally(() => setIsLoading(false));
-  }, [currentPage]);
-
-  const handlePageChange = (selected: number) => goTo(selected);
+  }, []);
 
   if (isLoading)
     return (
@@ -84,7 +83,7 @@ export const App = () => {
 
   return (
     <CartContext.Provider value={{ cartItems, addToCart }}>
-      <div onScroll={() => alert('hee')}>
+      <PaginationContext.Provider value={{ page, goToPage }}>
         <Header categories={categories} />
         <NavBar categories={categories} />
 
@@ -97,10 +96,10 @@ export const App = () => {
             total={TOTAL_NO_PHOTOS}
             hideOnSinglePage
             showPrevNextJumpers
-            current={currentPage}
+            current={page}
           /> */}
         </Container>
-      </div>
+      </PaginationContext.Provider>
     </CartContext.Provider>
   );
 };

@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useContext } from 'react';
 import styled from 'styled-components';
 import { useLocation } from 'react-router-dom';
+import { BottomScrollListener } from 'react-bottom-scroll-listener';
 
 import { Card } from './product-card';
 
@@ -8,6 +9,9 @@ import { Product } from 'types';
 
 import { API_URL, ITEMS_PER_PAGE } from './constants';
 import usePagination from 'use-pagination';
+import { RenderStateContainer } from 'components';
+import Loading from './loading';
+import { PaginationContext } from './pagination-context';
 
 const StyledMain = styled.div`
   display: flex;
@@ -50,39 +54,52 @@ const fetchData = async (page: number, categoryName: string, searchTerm?: string
   return categoryProductsJson;
 };
 
-const handleScroll = (e: any) => {
-  console.log('heey');
-  const bottom = e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
-  if (bottom) {
-    console.log('heey');
-  }
-};
-
 const MainContent = () => {
   const [categoryProducts, setcategoryProducts] = useState<Product[]>([]);
-  const [, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [, setHasError] = useState<Error>();
 
   const location = useLocation();
-  const { currentPage } = usePagination();
+  const { page, goToPage } = useContext(PaginationContext);
+
+  const handleScroll = () => {
+    goToPage(page + 1);
+  };
 
   useEffect(() => {
     const filter = location.pathname.slice(1);
     const searchValue = location.search.replace('?q=', '');
-    fetchData(currentPage, filter, searchValue)
-      .then((result) => setcategoryProducts(result.products))
+    fetchData(page, filter, searchValue)
+      .then((result) => {
+        let data = result.products;
+        if (page !== 1) {
+          data = [...categoryProducts, ...result.products];
+        }
+        setcategoryProducts(data);
+      })
       .catch((error) => setHasError(error))
       .finally(() => setIsLoading(false));
-  }, [location]);
+  }, [location, page]);
+
+  if (isLoading)
+    return (
+      <RenderStateContainer>
+        <Loading />
+      </RenderStateContainer>
+    );
 
   return (
-    <StyledMain onScroll={handleScroll}>
-      <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-        {categoryProducts.map((product: Product) => {
-          return <Card key={product.id} {...product} />;
-        })}
-      </div>
-    </StyledMain>
+    <BottomScrollListener onBottom={() => handleScroll()}>
+      {() => (
+        <StyledMain>
+          <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+            {categoryProducts.map((product: Product) => {
+              return <Card key={product.id} {...product} />;
+            })}
+          </div>
+        </StyledMain>
+      )}
+    </BottomScrollListener>
   );
 };
 
