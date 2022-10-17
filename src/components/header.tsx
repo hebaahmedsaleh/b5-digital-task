@@ -5,10 +5,8 @@ import avatar from './icons/ic-actions-user.svg';
 import cart from './icons/ic-ecommerce-basket.svg';
 import Search from './icons/search.svg';
 import { colors } from './color';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import { API_URL } from './constants';
+import { useNavigate } from 'react-router-dom';
 import { CartContext } from 'cart-context';
-import usePagination from 'use-pagination';
 import { PaginationContext } from './pagination-context';
 
 const StyledHeader = styled.header`
@@ -84,29 +82,37 @@ const StyledContainer = styled.div`
   border: 1px solid ${colors.lightBorder};
 `;
 
+const StyledCartCounter = styled.p`
+  background: #e5704b;
+  width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  font-size: 12px;
+  text-align: center;
+  position: absolute;
+  top: 12px;
+  left: -4px;
+`;
+
 const Header = ({ categories }: { categories: string[] }) => {
   const navigate = useNavigate();
   const [, setSearch] = useState('');
-  const [, setSearchParams] = useSearchParams();
-  // const { currentPage, goTo } = usePagination();
   const { cartItems } = useContext(CartContext);
   const { goToPage } = useContext(PaginationContext);
 
-  const onChange = (e: any) => {
-    navigate(`/${e.target?.value}`);
+  const onChange = (event: { target: { value: string } }) => {
+    window.scrollTo(0, 0);
+    navigate(`/${event.target?.value}`);
   };
 
-  const handleKeyDown = (event: any) => {
-    if (event.keyCode === 13) {
+  const handleKeyDown = (event: React.KeyboardEvent, value: string) => {
+    if (event.key === 'Enter') {
       window.scrollTo(0, 0);
-      // setCurrentPage(1);
       goToPage(1);
-      //setSearchParams({ q: event.target?.value });
-      navigate(`?q=${event.target?.value}`);
+      navigate(`?q=${value}`);
     }
   };
 
-  const pathname = location.pathname.slice(1);
   return (
     <StyledHeader>
       <StyledAvatar style={{ alignItems: 'center' }}>
@@ -114,12 +120,12 @@ const Header = ({ categories }: { categories: string[] }) => {
       </StyledAvatar>
 
       <StyledContainer style={{ display: 'flex', backgroundColor: '#F7F7FC' }}>
-        <StyledSelect onChange={onChange}>
-          <option key='All' value='All' selected={pathname === 'All' || pathname === ''}>
+        <StyledSelect onChange={onChange} defaultValue={'All'}>
+          <option key='All' value='All'>
             All Categories
           </option>
           {categories.map((category) => (
-            <option key={category} value={category} selected={pathname === category ? true : false}>
+            <option key={category} value={category}>
               {category}
             </option>
           ))}
@@ -131,7 +137,7 @@ const Header = ({ categories }: { categories: string[] }) => {
             placeholder='Search Products, Categories..'
             name='search'
             onChange={(e) => setSearch(e.target.value)}
-            onKeyDown={handleKeyDown}
+            onKeyDown={(e: any) => handleKeyDown(e, e.target.value)}
           />
           <StyledSearchIcon src={Search} />
         </div>
@@ -142,21 +148,7 @@ const Header = ({ categories }: { categories: string[] }) => {
 
         <div style={{ position: 'relative', height: 46 }}>
           <img src={cart} width={24} height={24} style={{ marginRight: 8 }} />
-          <p
-            style={{
-              background: '#E5704B',
-              width: 16,
-              height: 16,
-              borderRadius: 8,
-              fontSize: 12,
-              textAlign: 'center',
-              position: 'absolute',
-              top: 4,
-              left: 4,
-            }}
-          >
-            {cartItems}
-          </p>
+          <StyledCartCounter>{cartItems}</StyledCartCounter>
         </div>
       </StyledAvatar>
     </StyledHeader>

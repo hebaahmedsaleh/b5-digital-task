@@ -7,10 +7,9 @@ import Content from './content';
 import styles from './main.module.css';
 
 import Loading from './loading';
-import { API_URL, ITEMS_PER_PAGE, TOTAL_NO_PHOTOS } from './constants';
+import { API_URL } from './constants';
 
 import { Props } from 'types';
-import usePagination from '../use-pagination';
 import { CartContext } from 'cart-context';
 import { PaginationContext } from './pagination-context';
 
@@ -48,7 +47,6 @@ export const App = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [hasError, setHasError] = useState<Error>();
   const [cartItems, addToCart] = useState(0);
-  // const { currentPage } = usePagination();
 
   const [page, goToPage] = useState(1);
   useEffect(() => {
@@ -88,16 +86,7 @@ export const App = () => {
         <NavBar categories={categories} />
 
         <Container>
-          <Content />
-
-          {/* <Pagination
-            onChange={handlePageChange}
-            pageSize={ITEMS_PER_PAGE}
-            total={TOTAL_NO_PHOTOS}
-            hideOnSinglePage
-            showPrevNextJumpers
-            current={page}
-          /> */}
+          <Content categories={categories} />
         </Container>
       </PaginationContext.Provider>
     </CartContext.Provider>

@@ -14,6 +14,7 @@ const StyledNavBar = styled.nav`
   left: 0;
   border-right: 1px solid #e1e1e1;
   padding-top: 100px;
+  overflow-x: scroll;
   @media (max-width: 992px) {
     width: 80px;
   }
