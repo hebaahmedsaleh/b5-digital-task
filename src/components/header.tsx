@@ -114,18 +114,22 @@ const Header = ({ categories }: { categories: string[] }) => {
   };
 
   return (
-    <StyledHeader>
+    <StyledHeader data-testid='header'>
       <StyledAvatar style={{ alignItems: 'center' }}>
         <p style={{ color: colors.mainText, fontSize: 30, fontWeight: 'bolder' }}> Freshnesecom </p>
       </StyledAvatar>
 
       <StyledContainer style={{ display: 'flex', backgroundColor: '#F7F7FC' }}>
-        <StyledSelect onChange={onChange} defaultValue={'All'}>
+        <StyledSelect onChange={onChange} defaultValue={'All'} data-testid='header-select'>
           <option key='All' value='All'>
             All Categories
           </option>
           {categories.map((category) => (
-            <option key={category} value={category}>
+            <option
+              key={category}
+              value={category}
+              selected={location.pathname.slice(1) === category}
+            >
               {category}
             </option>
           ))}

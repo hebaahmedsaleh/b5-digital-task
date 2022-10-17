@@ -47,7 +47,7 @@ const NavBar = ({ categories }: { categories: string[] }) => {
   const location = useLocation();
 
   return (
-    <StyledNavBar>
+    <StyledNavBar data-testid='categories'>
       {categories?.map((category) => {
         return (
           <StyledIcon
