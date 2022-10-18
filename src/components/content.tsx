@@ -72,7 +72,7 @@ const MainContent = ({ categories }: { categories: string[] }) => {
 
   useEffect(() => {
     if (page == 1) hasMore = true;
-  }, [page]);
+  }, [page, location]);
 
   useEffect(() => {
     const filter = location.pathname.slice(1);

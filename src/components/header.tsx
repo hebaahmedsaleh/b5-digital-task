@@ -66,6 +66,10 @@ const StyledSearchInput = styled.input`
     letter-spacing: 0.008em;
     color: #9a9ab0;
   }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
 `;
 
 const StyledSelect = styled.select`
@@ -100,8 +104,11 @@ const Header = ({ categories }: { categories: string[] }) => {
   const { cartItems } = useContext(CartContext);
   const { goToPage } = useContext(PaginationContext);
 
+  const pathname = location.pathname.slice(1);
+
   const onChange = (event: { target: { value: string } }) => {
     window.scrollTo(0, 0);
+    goToPage(1);
     navigate(`/${event.target?.value}`);
   };
 
@@ -120,8 +127,8 @@ const Header = ({ categories }: { categories: string[] }) => {
       </StyledAvatar>
 
       <StyledContainer style={{ display: 'flex', backgroundColor: '#F7F7FC' }}>
-        <StyledSelect onChange={onChange} defaultValue={'All'} data-testid='header-select'>
-          <option key='All' value='All'>
+        <StyledSelect onChange={onChange} data-testid='header-select'>
+          <option key='All' value='All' selected={!!pathname}>
             All Categories
           </option>
           {categories.map((category) => (
@@ -137,6 +144,7 @@ const Header = ({ categories }: { categories: string[] }) => {
         <div style={{ width: 1, backgroundColor: colors.lightBorder, margin: '4px 0' }} />
         <div style={{ position: 'relative' }}>
           <StyledSearchInput
+            disabled={!!pathname}
             type='text'
             placeholder='Search Products, Categories..'
             name='search'
