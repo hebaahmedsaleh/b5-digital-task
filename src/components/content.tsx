@@ -23,6 +23,7 @@ const StyledMain = styled.div`
     margin-bottom: 40px;
   }
 `;
+let hasMore = true;
 
 const MainContent = ({ categories }: { categories: string[] }) => {
   const [categoryProducts, setcategoryProducts] = useState<Product[]>([]);
@@ -34,6 +35,8 @@ const MainContent = ({ categories }: { categories: string[] }) => {
 
   // fetch data handles the search, selecting category and also show more in /product api
   const fetchData = async (page: number, categoryName: string, searchTerm?: string) => {
+    setIsLoading(true);
+
     const skip = page > 1 ? page * ITEMS_PER_PAGE : 0;
     let resultQuery = '';
     const params: { skip?: number; limit?: number; q?: string } = {
@@ -47,7 +50,7 @@ const MainContent = ({ categories }: { categories: string[] }) => {
       else resultQuery += `${key}=${params[key]}&`;
     });
 
-    let pathName = `${API_URL}products?${resultQuery}`;
+    let pathName = `${API_URL}products/search?${resultQuery}`;
 
     if (categoryName && categoryName !== 'All') {
       pathName = `${API_URL}products/category/${categoryName}?${resultQuery}`;
@@ -68,19 +71,29 @@ const MainContent = ({ categories }: { categories: string[] }) => {
   };
 
   useEffect(() => {
+    if (page == 1) hasMore = true;
+  }, [page]);
+
+  useEffect(() => {
     const filter = location.pathname.slice(1);
     const searchValue = location.search.replace('?q=', '');
 
-    fetchData(page, filter, searchValue)
-      .then((result) => {
-        let data = result.products;
-        if (page !== 1) {
-          data = [...categoryProducts, ...result.products];
-        }
-        setcategoryProducts(data);
-      })
-      .catch((error) => setHasError(error))
-      .finally(() => setIsLoading(false));
+    if (hasMore) {
+      fetchData(page, filter, searchValue)
+        .then((result) => {
+          let data = result.products;
+          if (page !== 1) {
+            data = [...categoryProducts, ...result.products];
+          }
+
+          if (result.total <= page * ITEMS_PER_PAGE + ITEMS_PER_PAGE) {
+            hasMore = false;
+          }
+          setcategoryProducts(data);
+        })
+        .catch((error) => setHasError(error))
+        .finally(() => setIsLoading(false));
+    }
   }, [location, page]);
 
   if (isLoading)
