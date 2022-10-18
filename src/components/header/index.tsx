@@ -1,13 +1,13 @@
 import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 
-import avatar from './icons/ic-actions-user.svg';
-import cart from './icons/ic-ecommerce-basket.svg';
-import Search from './icons/search.svg';
-import { colors } from './color';
+import avatar from 'icons/ic-actions-user.svg';
+import cart from 'icons/ic-ecommerce-basket.svg';
+import Search from 'icons/search.svg';
+import { colors } from '../../color';
 import { useNavigate } from 'react-router-dom';
 import { CartContext } from 'cart-context';
-import { PaginationContext } from './pagination-context';
+import { PaginationContext } from '../pagination-context';
 
 const StyledHeader = styled.header`
   background: ${colors.white};

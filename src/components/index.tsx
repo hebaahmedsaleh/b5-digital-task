@@ -2,12 +2,12 @@ import React, { FC, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import Header from './header';
-import NavBar from './nav-bar';
+import NavBar from './side-bar';
 import Content from './content';
 import styles from './main.module.css';
 
 import Loading from './loading';
-import { API_URL } from './constants';
+import { API_URL } from '../constants';
 
 import { Props } from 'types';
 import { CartContext } from 'cart-context';

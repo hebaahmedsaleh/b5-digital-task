@@ -1,10 +1,9 @@
-import { FC } from 'react';
 import styled from 'styled-components';
 
-import { colors } from './color';
+import { colors } from 'color';
 import { useLocation } from 'react-router-dom';
 
-const StyledNavBar = styled.nav`
+const StyledSideBar = styled.nav`
   background: ${colors.white};
   position: fixed;
   width: 300px;
@@ -43,11 +42,11 @@ const StyledIcon = styled.a`
   }
 `;
 
-const NavBar = ({ categories }: { categories: string[] }) => {
+const SideBar = ({ categories }: { categories: string[] }) => {
   const location = useLocation();
 
   return (
-    <StyledNavBar data-testid='categories'>
+    <StyledSideBar data-testid='categories'>
       {categories?.map((category) => {
         return (
           <StyledIcon
@@ -59,8 +58,8 @@ const NavBar = ({ categories }: { categories: string[] }) => {
           </StyledIcon>
         );
       })}
-    </StyledNavBar>
+    </StyledSideBar>
   );
 };
 
-export default NavBar;
+export default SideBar;

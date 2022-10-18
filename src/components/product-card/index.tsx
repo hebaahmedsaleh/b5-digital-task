@@ -3,7 +3,7 @@ import styles from './card.module.css';
 
 import { Product } from 'types';
 import styled from 'styled-components';
-import { colors } from './color';
+import { colors } from '../../color';
 import { CartContext } from 'cart-context';
 
 export const StyledButton = styled.button`
@@ -33,7 +33,6 @@ const StyledIncrementBtn = styled.div`
 const StyledContainer = styled.div`
   display: flex;
   align-items: center;
-  margin-top: 20px;
   justify-content: center;
 
   & .count-items {

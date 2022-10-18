@@ -7,7 +7,7 @@ import { Card } from './product-card';
 
 import { Product } from 'types';
 
-import { API_URL, ITEMS_PER_PAGE } from './constants';
+import { API_URL, ITEMS_PER_PAGE } from '../constants';
 
 import { RenderStateContainer } from 'components';
 import Loading from './loading';
