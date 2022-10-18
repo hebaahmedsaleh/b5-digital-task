@@ -74,11 +74,11 @@ test('header categories has same count side bar + 1', async () => {
   });
 });
 
-// test('upon click on first item become selected', async () => {
-//   await waitFor(() => {
-//     const selectedCategory = screen.getByTestId('categories').children[1];
-//     userEvent.click(selectedCategory);
+test('upon click on first item become selected', async () => {
+  await waitFor(() => {
+    const selectedCategory = screen.getByTestId('categories').children[1];
+    userEvent.click(selectedCategory);
 
-//      expect(selectedCategory.classList.contains('selected')).toBeDefined();
-//   });
-// });
+    expect(selectedCategory.classList.contains('selected')).toBeDefined();
+  });
+});
