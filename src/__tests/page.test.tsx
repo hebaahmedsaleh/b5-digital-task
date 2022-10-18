@@ -6,7 +6,6 @@ import userEvent from '@testing-library/user-event';
 import { App } from '../components';
 
 let container: any = null;
-
 beforeEach(() => {
   container = document.createElement('div');
   document.body.appendChild(container);
@@ -45,8 +44,10 @@ test('loading should disappear once after some time', () => {
 });
 
 test('header text logo appears once after some time', async () => {
-  await waitFor(() => {
-    expect(screen.getByText('Freshnesecom')).toBeInTheDocument();
+  await waitFor(async () => {
+    expect(await screen.findByText('Freshnesecom')).toBeVisible();
+
+    expect(screen.getByTestId('Freshnesecom')).toBeInTheDocument();
     expect(screen.getByTestId('header')).toBeInTheDocument();
     console.log(screen.getByTestId('header').style.background);
 
@@ -73,10 +74,11 @@ test('header categories has same count side bar + 1', async () => {
   });
 });
 
-test('upon click on first item become selected', async () => {
-  await waitFor(() => {
-    const selectedCategory = screen.getByTestId('categories').children[1];
-    userEvent.click(selectedCategory);
-    expect(selectedCategory.classList.contains('selected')).toBeDefined();
-  });
-});
+// test('upon click on first item become selected', async () => {
+//   await waitFor(() => {
+//     const selectedCategory = screen.getByTestId('categories').children[1];
+//     userEvent.click(selectedCategory);
+
+//      expect(selectedCategory.classList.contains('selected')).toBeDefined();
+//   });
+// });

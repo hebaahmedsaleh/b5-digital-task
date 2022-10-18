@@ -120,7 +120,7 @@ const MainContent = ({ categories }: { categories: string[] }) => {
     <BottomScrollListener onBottom={() => handleScroll()}>
       {() => (
         <StyledMain>
-          <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap' }} data-testid='content'>
             {categoryProducts.map((product: Product) => {
               return <Card key={product.id} {...product} />;
             })}

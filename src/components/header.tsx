@@ -123,7 +123,12 @@ const Header = ({ categories }: { categories: string[] }) => {
   return (
     <StyledHeader data-testid='header'>
       <StyledAvatar style={{ alignItems: 'center' }}>
-        <p style={{ color: colors.mainText, fontSize: 30, fontWeight: 'bolder' }}> Freshnesecom </p>
+        <p
+          data-testid='Freshnesecom'
+          style={{ color: colors.mainText, fontSize: 30, fontWeight: 'bolder' }}
+        >
+          Freshnesecom
+        </p>
       </StyledAvatar>
 
       <StyledContainer style={{ display: 'flex', backgroundColor: '#F7F7FC' }}>
@@ -144,7 +149,6 @@ const Header = ({ categories }: { categories: string[] }) => {
         <div style={{ width: 1, backgroundColor: colors.lightBorder, margin: '4px 0' }} />
         <div style={{ position: 'relative' }}>
           <StyledSearchInput
-            disabled={!!pathname}
             type='text'
             placeholder='Search Products, Categories..'
             name='search'
@@ -160,7 +164,9 @@ const Header = ({ categories }: { categories: string[] }) => {
 
         <div style={{ position: 'relative', height: 46 }}>
           <img src={cart} width={24} height={24} style={{ marginRight: 8 }} />
-          <StyledCartCounter>{cartItems}</StyledCartCounter>
+          <StyledCartCounter role='button' data-testid='counter'>
+            {cartItems}
+          </StyledCartCounter>
         </div>
       </StyledAvatar>
     </StyledHeader>
